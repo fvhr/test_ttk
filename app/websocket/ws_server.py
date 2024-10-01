@@ -55,7 +55,7 @@ manager = ConnectionManager()
 
 @ws_router.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str, enabled: bool = Depends(check_ws_router_enabled)):
-    if client_id != settings.WS_TOKEN or not enabled:
+    if client_id != settings.WS_TOKEN:
         await websocket.close()
         return {"data": "invalid token"}
 

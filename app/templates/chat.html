@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex flex-col items-center">
+    <h1>WebSocket Chat</h1>
+    <h2>Your ID: <span id="ws-id"></span></h2>
+    <form action="" onsubmit="sendMessage(event)">
+        <input class="bg-green-300" type="text" id="messageText" autocomplete="off"/>
+        <button>Send</button>
+    </form>
+    <ul id='messages'>
+</ul>
+</div>
+<script>
+    function appendMessage(msg) {
+        let messages = document.getElementById('messages')
+        let message = document.createElement('li')
+        let content = document.createTextNode(msg)
+        message.appendChild(content)
+        messages.appendChild(message)
+    }
+
+    let ws = new WebSocket(`ws://localhost:8000/socket/ws/0984bf48-4956-4e02-8d97-61f18a8f78ad`);
+    ws.onmessage = function (event) {
+        appendMessage(event.data)
+    };
+
+    function sendMessage(event) {
+        let input = document.getElementById("messageText")
+        ws.send(input.value)
+        input.value = ''
+        event.preventDefault()
+    }
+</script>
+{% endblock %}
