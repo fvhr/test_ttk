@@ -1,35 +1,78 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex flex-col items-center">
-    <h1>WebSocket Chat</h1>
-    <h2>Your ID: <span id="ws-id"></span></h2>
-    <form action="" onsubmit="sendMessage(event)">
-        <input class="bg-green-300" type="text" id="messageText" autocomplete="off"/>
-        <button>Send</button>
-    </form>
-    <ul id='messages'>
-</ul>
+<div class="flex flex-row">
+    <!-- Список пользователей -->
+    <div class="w-1/4 bg-gray-200 p-4">
+        <h2>Connected Users</h2>
+        <ul id='user-list' class="list-none">
+        </ul>
+    </div>
+
+    <!-- Основной чат -->
+    <div class="flex flex-col items-center w-3/4 p-4">
+        <h1>WebSocket Chat</h1>
+        <h2>Your ID: <span id="ws-id" class="text-green-500"></span></h2>
+        <form action="" onsubmit="sendMessage(event)">
+            <input class="bg-green-300" type="text" id="messageText" autocomplete="off"/>
+            <button>Send</button>
+        </form>
+        <ul id='messages' class="list-none mt-4">
+        </ul>
+    </div>
 </div>
+
 <script>
+    let currentUserId = '';
+
     function appendMessage(msg) {
-        let messages = document.getElementById('messages')
-        let message = document.createElement('li')
-        let content = document.createTextNode(msg)
-        message.appendChild(content)
-        messages.appendChild(message)
+        let messages = document.getElementById('messages');
+        let message = document.createElement('li');
+        let content = document.createTextNode(msg);
+        message.appendChild(content);
+        messages.appendChild(message);
+    }
+
+    function updateUserList(users) {
+        let userList = document.getElementById('user-list');
+        userList.innerHTML = ''; // Очистить список
+        users.forEach(user => {
+            let li = document.createElement('li');
+            li.textContent = user;
+            if (user === currentUserId) {
+                li.style.color = 'green'; // Текущий пользователь зеленым
+            }
+            li.onclick = () => {
+                if (user !== currentUserId) {
+                    let personalMessage = prompt("Send a personal message to " + user);
+                    if (personalMessage) {
+                        ws.send(JSON.stringify({ target: user, message: personalMessage }));
+                    }
+                }
+            };
+            userList.appendChild(li);
+        });
     }
 
     let ws = new WebSocket(`ws://localhost:8000/socket/ws/0984bf48-4956-4e02-8d97-61f18a8f78ad`);
+
     ws.onmessage = function (event) {
-        appendMessage(event.data)
+        let data = JSON.parse(event.data);
+        if (data.type === 'uuid') {
+            document.getElementById('ws-id').textContent = data.client_id;
+            currentUserId = data.client_id;
+        } else if (data.type === 'message') {
+            appendMessage(data.message);
+        } else if (data.type === 'users') {
+            updateUserList(data.users);
+        }
     };
 
     function sendMessage(event) {
-        let input = document.getElementById("messageText")
-        ws.send(input.value)
-        input.value = ''
-        event.preventDefault()
+        let input = document.getElementById("messageText");
+        ws.send(input.value);
+        input.value = '';
+        event.preventDefault();
     }
 </script>
 {% endblock %}

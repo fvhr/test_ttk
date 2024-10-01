@@ -1,3 +1,4 @@
+import json
 import uuid
 
 from fastapi import WebSocket, WebSocketDisconnect, HTTPException, Depends, APIRouter
@@ -27,7 +28,8 @@ class ConnectionManager:
             "ip": websocket.client.host,
             "port": websocket.client.port,
         }
-        await websocket.send_text(f"Your UUID: {client_id}")
+        # Отправляем UUID клиенту
+        await websocket.send_json({"type": "uuid", "client_id": client_id})
         await self.update_connected_clients()
 
     def disconnect(self, client_id: str):
@@ -37,17 +39,17 @@ class ConnectionManager:
     async def send_personal_message(self, message: str, client_id: str):
         websocket = self.active_connections[client_id]["websocket"]
         if websocket:
-            await websocket.send_text(message)
+            await websocket.send_json({"type": "message", "message": message})
 
     async def broadcast(self, message: str, exclude_id: str = None):
         for client_id, connection in self.active_connections.items():
             if client_id != exclude_id:
-                await connection["websocket"].send_text(message)
+                await connection["websocket"].send_json({"type": "message", "message": message})
 
     async def update_connected_clients(self):
         client_list = list(self.active_connections.keys())
         for connection in self.active_connections.values():
-            await connection["websocket"].send_text(f"Connected clients: {client_list}")
+            await connection["websocket"].send_json({"type": "users", "users": client_list})
 
 
 manager = ConnectionManager()
@@ -64,7 +66,19 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str, enabled: bool
     try:
         while True:
             data = await websocket.receive_text()
-            await manager.broadcast(f"Client {client_id} сказал: {data}", exclude_id=client_id)
+            try:
+                # Предполагаем, что данные могут быть в JSON (для личных сообщений)
+                message_data = json.loads(data)
+                target_client_id = message_data.get('target')
+                message = message_data.get('message')
+                if target_client_id and target_client_id in manager.active_connections:
+                    await manager.send_personal_message(f"Private from {client_id}: {message}", target_client_id)
+                else:
+                    await manager.broadcast(f"Client {client_id} сказал: {message}", exclude_id=client_id)
+            except json.JSONDecodeError:
+                # Обычные сообщения (не JSON)
+                await manager.broadcast(f"Client {client_id} сказал: {data}", exclude_id=client_id)
     except WebSocketDisconnect:
         manager.disconnect(client_id)
         await manager.broadcast(f"Клиент {client_id} вышел из чата")
+        await manager.update_connected_clients()
