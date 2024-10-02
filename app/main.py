@@ -17,9 +17,7 @@ from pages.router import page_router
 from settings import Settings
 from websocket.ws_server import ws_router
 
-app = FastAPI(
-    title="TestTTK"
-)
+app = FastAPI(title="TestTTK")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -28,18 +26,20 @@ app.include_router(api_router)
 app.include_router(ws_router)
 app.include_router(page_router)
 
-origins = [
-    "http://localhost",
-    "http://localhost:8000"
-]
+origins = ["http://localhost", "http://localhost:8000"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
-    allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
-                   "Authorization"],
+    allow_headers=[
+        "Content-Type",
+        "Set-Cookie",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Origin",
+        "Authorization",
+    ],
 )
 
 settings = Settings()
@@ -56,7 +56,7 @@ async def startup_event():
             hashed_password = auth.utils.hash(settings.PASSWORD)
             stmt = insert(User).values(
                 hashed_password=hashed_password,
-                email=settings.LOGIN
+                email=settings.LOGIN,
             )
             await session.execute(stmt)
             await session.commit()
@@ -71,4 +71,9 @@ async def monitor_modules(manager):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=settings.WS_IP, port=settings.WS_PORT, reload=True)
+    uvicorn.run(
+        "main:app",
+        host=settings.WS_HOST,
+        port=settings.WS_PORT,
+        reload=True,
+    )

@@ -1,6 +1,6 @@
 import importlib
-import os
 import time
+from pathlib import Path
 
 
 class ModuleManager:
@@ -11,10 +11,10 @@ class ModuleManager:
         self.read_config()
 
     def read_config(self):
-        absolute_path = os.path.abspath(self.config_path)
-        with open(absolute_path, 'r') as file:
+        absolute_path = Path(self.config_path).resolve()
+        with Path(absolute_path).open("r") as file:
             for line in file.readlines():
-                module_name, status = line.strip().split('=')
+                module_name, status = line.strip().split("=")
                 self.modules_states[module_name] = status
 
     def load_module(self, module_name):

@@ -11,22 +11,24 @@ KEY = get_random_bytes(32)  # 32 байта = 256 бит
 def encrypt_message(message: str) -> str:
     cipher = AES.new(KEY, AES.MODE_CBC)
     iv = cipher.iv  # Вектор инициализации
-    encrypted_message = cipher.encrypt(pad(message.encode(), AES.block_size))  # Шифруем и добавляем padding
-    return base64.b64encode(iv + encrypted_message).decode('utf-8')  # Кодируем в base64 для передачи
+    encrypted_message = cipher.encrypt(
+        pad(message.encode(), AES.block_size),
+    )
+    return base64.b64encode(iv + encrypted_message).decode(
+        "utf-8",
+    )
 
 
 def decrypt_message(encrypted_message: str) -> str:
     print(encrypted_message)
     encrypted_message_bytes = base64.b64decode(encrypted_message)
     iv = encrypted_message_bytes[:16]  # Первые 16 байт — это IV
-    encrypted_message_bytes = encrypted_message_bytes[16:]  # Остальное — шифрованное сообщение
+    encrypted_message_bytes = encrypted_message_bytes[
+        16:
+    ]  # Остальное — шифрованное сообщение
     cipher = AES.new(KEY, AES.MODE_CBC, iv)
-    decrypted_message = unpad(cipher.decrypt(encrypted_message_bytes), AES.block_size)  # Дешифруем и убираем padding
-    return decrypted_message.decode('utf-8')
-
-
-if __name__ == '__main__':
-    string = "ты лох"
-    message = encrypt_message(string)
-    print(type(message))
-    print(decrypt_message(message))
+    decrypted_message = unpad(
+        cipher.decrypt(encrypted_message_bytes),
+        AES.block_size,
+    )  # Дешифруем и убираем padding
+    return decrypted_message.decode("utf-8")

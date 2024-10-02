@@ -10,9 +10,6 @@ class Base(DeclarativeBase):
     registry = mapper_registry
     metadata = mapper_registry.metadata
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        primary_key=True,
-        default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
 
     __abstract__ = True

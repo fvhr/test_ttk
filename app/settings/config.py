@@ -6,7 +6,7 @@ from environs import Env
 env = Env()
 env.read_env()
 config = configparser.ConfigParser()
-config.read('websocket/ws_config.conf')
+config.read("websocket/ws_config.conf")
 
 
 @dataclass
@@ -16,10 +16,10 @@ class Settings:
     DB_HOST: str = field(default_factory=lambda: env("DB_HOST"))
     DB_NAME: str = field(default_factory=lambda: env("DB_NAME"))
 
-    WS_IP: str = config['websocket_server']['ip_address']
-    WS_PORT: int = int(config['websocket_server']['port'])
-    WS_TOKEN: str = config['websocket_server']['token']
-    WS_RUN: bool = config['websocket_server']['run']
+    WS_HOST: str = config["websocket_server"]["host_address"]
+    WS_PORT: int = int(config["websocket_server"]["port"])
+    WS_TOKEN: str = config["websocket_server"]["token"]
+    WS_RUN: bool = config["websocket_server"]["run"]
 
     SECRET_AUTH: str = field(default_factory=lambda: env("SECRET_AUTH"))
     ALGORITHM: str = field(default_factory=lambda: env("ALGORITHM"))

@@ -6,4 +6,7 @@ class my_module1:
         self.manager = manager
 
     def get_module_data(self):
-        return {"name": "my_module1", "status": module_manager.modules["my_module1"]}
+        return {
+            "name": "my_module1",
+            "status": module_manager.modules["my_module1"],
+        }
