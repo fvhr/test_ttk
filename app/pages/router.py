@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form, Depends
+from fastapi import APIRouter, Request, Form, Depends, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
@@ -46,6 +46,7 @@ def get_login_page(request: Request):
 @page_router.post("/login")
 async def login(
     request: Request,
+    response: Response,  # Для работы с куками
     db: AsyncSession = Depends(get_async_session),
     username: str = Form(...),
     password: str = Form(...),
@@ -59,13 +60,18 @@ async def login(
             "message": "Invalid Credentials",
         }, 401
 
+    # Создаем токен
     access_token = auth.oauth2.create_access_token(
         data={"user_id": str(user.id)},
     )
-    print(access_token)
-    return {
-        "access_token": access_token,
-    }
+    response.set_cookie(key="access_token", value=access_token, httponly=True)
+    return RedirectResponse(
+        url="/pages/api",
+        status_code=303,
+        headers={
+            "Authorization": f"Bearer {access_token}",
+        },
+    )
 
 
 @page_router.get("/api")
