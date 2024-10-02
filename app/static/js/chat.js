@@ -1,9 +1,8 @@
 let currentUserId = '';
-let token = document.getElementById('token').dataset.token;  // Получаем токен из скрытого элемента
 let ws;
 
 function connectWebSocket() {
-    ws = new WebSocket(`ws://localhost:8000/socket/ws/${token}`);
+    ws = new WebSocket(`ws://localhost:8000/socket/ws`);
 
     ws.onopen = function () {
         console.log("Connected to WebSocket");
@@ -20,6 +19,7 @@ function connectWebSocket() {
         } else if (data.type === 'users') {
             updateUserList(data.users);
         } else if (data.type === 'error') {
+            // Если сервер отправляет сообщение о проблеме
             showServerStatus(data.message);
         }
     };

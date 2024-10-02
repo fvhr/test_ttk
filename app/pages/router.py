@@ -29,7 +29,7 @@ def get_chat_page_with_token(request: Request, token: str):
     if token == settings.WS_TOKEN:
         return templates.TemplateResponse(
             "chat.html",
-            {"request": request, "token": token},
+            {"request": request},
         )
     return templates.TemplateResponse(
         "get_token.html",

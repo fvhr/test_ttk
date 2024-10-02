@@ -14,7 +14,6 @@ class ConnectionManager:
         self.active_connections: dict = {}
 
     async def connect(self, websocket: WebSocket):
-        print(settings.WS_RUN)
         if not settings.WS_RUN:
             await websocket.accept()
             await websocket.send_json(
@@ -39,10 +38,10 @@ class ConnectionManager:
             del self.active_connections[client_id]
 
     async def send_personal_message(
-        self,
-        message: str,
-        client_id: str,
-        is_admin: bool = False,
+            self,
+            message: str,
+            client_id: str,
+            is_admin: bool = False,
     ):
         if is_admin:
             client_id = decrypt_message(client_id)
@@ -54,16 +53,17 @@ class ConnectionManager:
             await websocket.send_json({"type": "message", "message": message})
 
     async def broadcast(
-        self,
-        message,
-        exclude_id: str = None,
-        is_admin: bool = False,
+            self,
+            message,
+            exclude_id: str = None,
+            is_admin: bool = False,
     ):
         if is_admin:
             message = "Сообщение от администратора: " + decrypt_message(
                 message,
             )
         for client_id, connection in self.active_connections.items():
+            print("ok")
             if client_id != exclude_id:
                 await connection["websocket"].send_json(
                     {"type": "message", "message": message},
@@ -92,10 +92,11 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
-@ws_router.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: str):
+@ws_router.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
-
+    client_id = [client_id for client_id, values in manager.active_connections.items()
+                 if values["websocket"] == websocket][0]
     try:
         while True:
             data = await websocket.receive_text()
@@ -105,8 +106,8 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                 target_client_id = message_data.get("target")
                 message = message_data.get("message")
                 if (
-                    target_client_id
-                    and target_client_id in manager.active_connections
+                        target_client_id
+                        and target_client_id in manager.active_connections
                 ):
                     await manager.send_personal_message(
                         f"Private from {client_id}: {message}",
@@ -115,17 +116,16 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                 else:
                     await manager.broadcast(
                         f"Client {client_id} сказал: {message}",
-                        exclude_id=client_id,
                     )
             except json.JSONDecodeError:
                 await manager.broadcast(
                     f"Client {client_id} сказал: {data}",
-                    exclude_id=client_id,
                 )
+
     except WebSocketDisconnect:
         manager.disconnect(client_id)
-        await manager.broadcast(f"Клиент {client_id} вышел из чата")
         await manager.update_connected_clients()
+        await manager.broadcast(f"Клиент {client_id} вышел из чата", exclude_id=client_id)
 
 
 async def check_server_status():
