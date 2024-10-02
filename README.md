@@ -59,5 +59,8 @@ python main.py
 
 # EndPoints
 /pages/chat - ввод токена для аутентификации в websocket
+
 /pages/api - api для работы с websocket server и модулями(доступно только авторизированным пользователям)
-/login - вход в api по логину и паролю из [переменных окружения](https://github.com/fvhr/test_ttk/README.md#L38-L39)
+
+/login - вход в api по логину и паролю из [переменных окружения](https://github.com/fvhr/test_ttk/blob/main/README.md#L38-L39
+)
