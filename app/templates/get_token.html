@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center h-screen">
+    <h1>Connect to WebSocket Chat</h1>
+
+    <!-- Проверка, передано ли сообщение об ошибке -->
+    {% if message %}
+    <div class="text-red-500">
+        {{ message }}: {{ token }}
+    </div>
+    {% endif %}
+
+    <form action="/pages/chat" method="POST">
+        <label for="token">Enter your token:</label>
+        <input type="text" id="token" name="token" required />
+        <button type="submit">Connect</button>
+    </form>
+</div>
+{% endblock %}

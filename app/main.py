@@ -9,7 +9,7 @@ from api.router import api_router
 from auth.router import auth_router
 from mysql.database import async_session_maker
 from mysql.models import User
-from pages.router import chat_router
+from pages.router import page_router
 from settings import Settings
 from websocket.ws_server import ws_router
 
@@ -22,7 +22,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(auth_router)
 app.include_router(api_router)
 app.include_router(ws_router)
-app.include_router(chat_router)
+app.include_router(page_router)
 
 origins = [
     "http://localhost",

@@ -19,60 +19,9 @@
         </form>
         <ul id='messages' class="list-none mt-4">
         </ul>
+        <div id="server-status" class="hidden text-red-500 mt-4"></div> <!-- Поле для вывода сообщения о статусе сервера -->
+        <button id="reconnect-btn" class="hidden mt-4 p-2 bg-blue-500 text-white" onclick="reconnect()">Reconnect</button>
     </div>
 </div>
 
-<script>
-    let currentUserId = '';
-
-    function appendMessage(msg) {
-        let messages = document.getElementById('messages');
-        let message = document.createElement('li');
-        let content = document.createTextNode(msg);
-        message.appendChild(content);
-        messages.appendChild(message);
-    }
-
-    function updateUserList(users) {
-        let userList = document.getElementById('user-list');
-        userList.innerHTML = ''; // Очистить список
-        users.forEach(user => {
-            let li = document.createElement('li');
-            li.textContent = user;
-            if (user === currentUserId) {
-                li.style.color = 'green'; // Текущий пользователь зеленым
-            }
-            li.onclick = () => {
-                if (user !== currentUserId) {
-                    let personalMessage = prompt("Send a personal message to " + user);
-                    if (personalMessage) {
-                        ws.send(JSON.stringify({ target: user, message: personalMessage }));
-                    }
-                }
-            };
-            userList.appendChild(li);
-        });
-    }
-
-    let ws = new WebSocket(`ws://localhost:8000/socket/ws/0984bf48-4956-4e02-8d97-61f18a8f78ad`);
-
-    ws.onmessage = function (event) {
-        let data = JSON.parse(event.data);
-        if (data.type === 'uuid') {
-            document.getElementById('ws-id').textContent = data.client_id;
-            currentUserId = data.client_id;
-        } else if (data.type === 'message') {
-            appendMessage(data.message);
-        } else if (data.type === 'users') {
-            updateUserList(data.users);
-        }
-    };
-
-    function sendMessage(event) {
-        let input = document.getElementById("messageText");
-        ws.send(input.value);
-        input.value = '';
-        event.preventDefault();
-    }
-</script>
 {% endblock %}
