@@ -4,3 +4,4 @@ __pycache__/
 venv/
 app/websocket/ws_config.conf
 app/modules/modules.conf
+app/mysql/migrations/versions/
