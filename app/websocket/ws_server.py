@@ -14,6 +14,7 @@ class ConnectionManager:
         self.active_connections: dict = {}
 
     async def connect(self, websocket: WebSocket):
+        print(settings.WS_RUN)
         if not settings.WS_RUN:
             await websocket.accept()
             await websocket.send_json(
@@ -80,9 +81,12 @@ class ConnectionManager:
     async def update_connected_clients(self):
         client_list = list(self.active_connections.keys())
         for connection in self.active_connections.values():
-            await connection["websocket"].send_json(
-                {"type": "users", "users": client_list},
-            )
+            try:
+                await connection["websocket"].send_json(
+                    {"type": "users", "users": client_list},
+                )
+            except Exception:
+                pass
 
 
 manager = ConnectionManager()

@@ -1,5 +1,5 @@
 let currentUserId = '';
-let token = "{{ token }}";  // Токен, переданный с сервера
+let token = document.getElementById('token').dataset.token;  // Получаем токен из скрытого элемента
 let ws;
 
 function connectWebSocket() {
@@ -20,7 +20,6 @@ function connectWebSocket() {
         } else if (data.type === 'users') {
             updateUserList(data.users);
         } else if (data.type === 'error') {
-            // Если сервер отправляет сообщение о проблеме
             showServerStatus(data.message);
         }
     };
