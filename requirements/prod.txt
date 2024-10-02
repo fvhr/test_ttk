@@ -9,3 +9,4 @@ pycryptodome==3.21.0
 SQLAlchemy==2.0.35
 fastapi_users[sqlalchemy]==13.0.0
 aiomysql==0.2.0
+alembic==1.13.3

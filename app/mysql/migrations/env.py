@@ -4,8 +4,8 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from app.mysql.database import DATABASE_URL
-from app.mysql.models import Base
+from mysql.database import DATABASE_URL
+from mysql.models import Base
 
 config = context.config
 

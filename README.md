@@ -11,12 +11,10 @@
 git clone https://github.com/fv_hr/test_ttk
 
 # Установка и запуск виртуального окружения
-python -m venv venv
-
-venv/Scripts/activate
+make create_venv
 
 # Установка зависимостей
-pip install -r requirements/prod.txt
+make install_requirements
 
 # Подстановка секретных переменных в окружение .env
 DB_USER={имя пользователя mysql}
@@ -37,6 +35,9 @@ LOGIN={логин пользователя api}
 
 PASSWORD={пароль пользователя api}
 
+# Создание таблиц/миграций в базе данных
+make make_migrations
+
 # Подстановка секретных переменных в окружение app/websockets/ws_config.conf
 [websocket_server]
 host_address = host на котором будет запущены websocket server, API, WebAPP
@@ -54,8 +55,7 @@ run = запуск websocket сервера по умолчанию
 
 
 # Запуск проекта
-cd app
-python main.py
+make run_project
 
 # EndPoints
 /pages/chat - ввод токена для аутентификации в websocket
