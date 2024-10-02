@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 
-from websocket import settings
 from api.schemas import MessageModel
 from auth import oauth2
+from modules.manager_modules import module_manager
+from websocket import settings
 from websocket.ws_server import manager
 from .utils import encrypt_message
 
@@ -61,4 +62,13 @@ async def shutdown_server(current_user: int = Depends(oauth2.get_current_user)):
         return {"message": "Server run initiated."}
 
 
+@api_router.get("/modules/")
+def get_all_modules():
+    return list(module_manager.modules.keys())
 
+
+@api_router.get("/modules/{module_name}/")
+def get_module_data(module_name: str):
+    if module_name in module_manager.modules_states:
+        return {"module_name": module_name, "status": module_manager.modules_states[module_name]}
+    raise HTTPException(status_code=404, detail="Module not found")

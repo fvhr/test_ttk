@@ -1,3 +1,6 @@
+import asyncio
+
+import uvicorn
 from argon2 import PasswordHasher
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,6 +10,7 @@ from sqlalchemy import insert, select
 import auth
 from api.router import api_router
 from auth.router import auth_router
+from modules.manager_modules import module_manager
 from mysql.database import async_session_maker
 from mysql.models import User
 from pages.router import page_router
@@ -39,7 +43,6 @@ app.add_middleware(
 )
 
 settings = Settings()
-
 password_hasher = PasswordHasher()
 
 
@@ -57,3 +60,15 @@ async def startup_event():
             )
             await session.execute(stmt)
             await session.commit()
+
+    asyncio.create_task(monitor_modules(module_manager))
+
+
+async def monitor_modules(manager):
+    while True:
+        manager.manage_modules()
+        await asyncio.sleep(10)
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host=settings.WS_IP, port=settings.WS_PORT, reload=True)

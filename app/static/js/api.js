@@ -88,3 +88,31 @@ function runServer() {
         .then(response => response.json())
         .then(data => showResponse(data));
 }
+
+// Получение всех модулей
+function getModules() {
+    fetch("/api/v1/modules/", {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+        }
+    })
+        .then(response => response.json())
+        .then(data => showResponse(data));
+}
+
+// Получение данных о конкретном модуле
+function getModuleData() {
+    const moduleName = prompt("Enter the module name:");
+    if (moduleName) {
+        fetch(`/api/v1/modules/${moduleName}/`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => showResponse(data))
+            .catch(error => console.error('Error:', error));
+    }
+}

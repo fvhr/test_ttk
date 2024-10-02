@@ -56,8 +56,6 @@ async def login(request: Request, db: AsyncSession = Depends(get_async_session),
     return {"access_token": access_token}  # Return the token in the response body
 
 
-
 @page_router.get("/api")
 async def get_api_page(request: Request):
     return templates.TemplateResponse("api.html", {"request": request})
-

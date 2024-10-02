@@ -3,3 +3,4 @@ __pycache__/
 .env
 venv/
 app/websocket/ws_config.conf
+app/modules/modules.conf

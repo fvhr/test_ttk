@@ -17,7 +17,7 @@ class Settings:
     DB_NAME: str = field(default_factory=lambda: env("DB_NAME"))
 
     WS_IP: str = config['websocket_server']['ip_address']
-    WS_PORT: str = int(config['websocket_server']['port'])
+    WS_PORT: int = int(config['websocket_server']['port'])
     WS_TOKEN: str = config['websocket_server']['token']
     WS_RUN: bool = config['websocket_server']['run']
 
