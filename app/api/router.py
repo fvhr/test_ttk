@@ -5,7 +5,7 @@ from auth import oauth2
 from modules.manager_modules import module_manager
 from websocket import settings
 from websocket.ws_server import manager
-from app.utils import encrypt_message
+from api.utils import encrypt_message
 
 api_router = APIRouter(prefix="/api/v1", tags=["Api"])
 
