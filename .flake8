@@ -1,0 +1,15 @@
+[flake8]
+exclude =
+    .git,
+    __pycache__,
+    venv,
+    models,
+    __init__.py,
+    env.py,
+    migrations,
+
+import-order-style = google
+
+inline-quotes = "
+
+ignore = I100, I202, W503, I001, I005, I004, I201, I003, F811, I101
