@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/get_token.css') }}">
+{% endblock %}
 {% block content %}
-<div class="flex flex-col items-center justify-center h-screen">
-    <h1>Connect to WebSocket Chat</h1>
+<div class="block-block">
+  <div class="form ">
+    <h1 class="title1">Connect to WebSocket Chat</h1>
 
     <!-- Проверка, передано ли сообщение об ошибке -->
     {% if message %}
@@ -11,10 +15,12 @@
     </div>
     {% endif %}
 
-    <form action="/pages/chat" method="POST">
-        <label for="token">Enter your token:</label>
+    <form class="form1" action="/pages/chat" method="POST">
+        <div for="token">Enter your token:</div>
         <input type="text" id="token" name="token" required />
-        <button type="submit">Connect</button>
+        <button class="button" type="submit">Connect</button>
     </form>
 </div>
+</div>
+
 {% endblock %}

@@ -63,7 +63,6 @@ class ConnectionManager:
                 message,
             )
         for client_id, connection in self.active_connections.items():
-            print("ok")
             if client_id != exclude_id:
                 await connection["websocket"].send_json(
                     {"type": "message", "message": message},
@@ -100,7 +99,6 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            await check_server_status()
             try:
                 message_data = json.loads(data)
                 target_client_id = message_data.get("target")
@@ -126,8 +124,3 @@ async def websocket_endpoint(websocket: WebSocket):
         manager.disconnect(client_id)
         await manager.update_connected_clients()
         await manager.broadcast(f"Клиент {client_id} вышел из чата", exclude_id=client_id)
-
-
-async def check_server_status():
-    if not settings.WS_RUN:
-        await manager.disconnect_all()

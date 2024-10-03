@@ -2,11 +2,12 @@ let currentUserId = '';
 let ws;
 
 function connectWebSocket() {
-    ws = new WebSocket(`ws://localhost:8000/socket/ws`);
+    ws = new WebSocket('ws://localhost:8000/socket/ws');
 
     ws.onopen = function () {
         console.log("Connected to WebSocket");
         hideServerStatus();
+        hideReconnectButton();  // Скрыть кнопку при успешном соединении
     };
 
     ws.onmessage = function (event) {
@@ -21,18 +22,21 @@ function connectWebSocket() {
         } else if (data.type === 'error') {
             // Если сервер отправляет сообщение о проблеме
             showServerStatus(data.message);
+        } else if (data.type === 'disconnect') {
+            // Если сервер отключает пользователя
+            handleDisconnect();
         }
     };
 
     ws.onclose = function () {
         console.log("Disconnected from WebSocket");
-        document.getElementById('reconnect-btn').classList.remove('hidden');
+        showReconnectButton();
         showServerStatus("Сервер был остановлен.");
     };
 
     ws.onerror = function (error) {
         console.error("WebSocket error:", error);
-        document.getElementById('reconnect-btn').classList.remove('hidden');
+        showReconnectButton();
         showServerStatus("Сервер временно недоступен.");
     };
 }
@@ -73,9 +77,26 @@ function sendMessage(event) {
     event.preventDefault();
 }
 
-function reconnect() {
+// Обработчик отключения пользователя
+function handleDisconnect() {
+    console.log("You have been disconnected by the server.");
+    showReconnectButton();
+    showServerStatus("Вы были отключены от сервера.");
+}
+
+// Показать кнопку reconnect
+function showReconnectButton() {
+    document.getElementById('reconnect-btn').classList.remove('hidden');
+}
+
+// Скрыть кнопку reconnect
+function hideReconnectButton() {
     document.getElementById('reconnect-btn').classList.add('hidden');
-    connectWebSocket();
+}
+
+// Логика для кнопки reconnect
+function reconnect() {
+    window.location.reload();  // Перезагружает страницу, чтобы восстановить соединение
 }
 
 function showServerStatus(message) {

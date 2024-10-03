@@ -62,9 +62,10 @@ async def disconnect_client(
 ):
     if current_user:
         if client_id in manager.active_connections:
-            websocket = manager.active_connections[client_id]["websocket"]
-            await websocket.close()
-            manager.disconnect(client_id, is_admin=True)
+            await manager.active_connections[client_id]["websocket"].close()
+            manager.disconnect(encrypt_message(client_id), is_admin=True)
+            await manager.update_connected_clients()
+            await manager.broadcast(f"Клиент {client_id} вышел из чата", exclude_id=client_id)
             return {"message": f"Client {client_id} disconnected"}
         raise HTTPException(status_code=404, detail="Client not found")
     return {}
@@ -76,6 +77,7 @@ async def shutdown_server(
 ):
     if current_user:
         await manager.broadcast("Server is shutting down.")
+        await manager.disconnect_all()
         settings.WS_RUN = False
         return {"message": "Server shutdown initiated."}
     return {}

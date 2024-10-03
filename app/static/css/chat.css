@@ -1,0 +1,66 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+    color: #000;
+    margin-left: 100px;
+
+}
+
+.chat {
+    margin-top: 30px;
+    background-color: rgb(202, 227, 249);
+    width: 550px;
+    border-radius: 10px;
+}
+
+.ws_id {
+    color: #006625;
+}
+
+.form {
+    margin-top: 40px;
+}
+
+.input {
+    padding-left: 5px;
+    color: #000;
+    margin-right: 10px;
+    height: 35px;
+    border-radius: 5px;
+
+}
+
+.form > button {
+    background-color: rgb(26, 29, 136);
+    padding: 0px 20px;
+    border-radius: 5px;
+    height: 35px;
+    color: white;
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+    color: white;
+    font-size: 18px;
+    font-weight: 500
+}
+
+.messages > li {
+    padding: 5px 10px;
+    background-color: rgb(26, 29, 136);
+    border-radius: 5px;
+}
+
+.connection {
+    position: absolute;
+    top: 90px;
+    left: 40px;
+    text-align: center;
+    border-radius: 5px;
+    background-color: rgb(202, 227, 249);
+    font-size: 18px;
+    font-weight: 500
+}

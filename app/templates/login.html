@@ -1,24 +1,32 @@
 {% extends "base.html" %}
-
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/login.css') }}">
+<script src="{{ url_for('static', path='js/login.js') }}"></script>
+{% endblock %}
 {% block content %}
-<div class="flex flex-col items-center justify-center h-screen">
-    <h1>Login</h1>
-    
+<div class="main">
+  <div class="form">
+    <h1 class="title1">Login</h1>
+
     <!-- Сообщение об ошибке, если учетные данные неверны -->
     {% if message %}
     <div class="text-red-500">{{ message }}</div>
     {% endif %}
-    
-    <form id="loginForm" method="POST">
-        <label for="username">Email:</label>
+
+    <form class="form-form" id="loginForm" method="POST">
+      <div class="flex">
+        <div for="username">Email:</div>
         <input type="text" id="username" name="username" required />
+      </div>
 
-        <label for="password">Password:</label>
+      <div class="flex">
+        <div for="password">Password:</div>
         <input type="password" id="password" name="password" required />
+      </div>
 
-        <button type="submit">Login</button>
+
+        <button class="button" type="submit">Login</button>
     </form>
 </div>
-<script src="{{ url_for('static', path='js/login.js') }}"></script>
-
+</div>
 {% endblock %}

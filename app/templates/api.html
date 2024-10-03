@@ -1,26 +1,32 @@
 {% extends "base.html" %}
-
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/api.css') }}">
+<script src="{{ url_for('static', path='js/api.js') }}"></script>
+{% endblock %}
 {% block content %}
-<div class="flex flex-col items-center justify-center h-screen">
-    <h1>API Endpoints</h1>
-    
-    <div>
-        <!-- Кнопки для взаимодействия с API -->
-        <button onclick="getConnectedClients()">Get Connected Clients</button>
-        <button onclick="broadcastMessage()">Broadcast Message</button>
-        <button onclick="sendToClient()">Send Message to Client</button>
-        <button onclick="disconnectClient()">Disconnect Client</button>
-        <button onclick="stopServer()">Stop Server</button>
-        <button onclick="runServer()">Run Server</button>
-        <button onclick="getModules()">Get Modules</button>
-        <button onclick="getModuleData()">Get Module Data</button>
+<div class="block5  h-screen">
+    <h1 class="title">API Endpoints</h1>
+
+    <div class="flex">
+      <div class="block1">
+        <button class="button" onclick="getConnectedClients()">Get Connected Clients</button>
+        <button class="button"  onclick="broadcastMessage()">Broadcast Message</button>
+        <button class="button"  onclick="sendToClient()">Send Message to Client</button>
+        <button class="button"  onclick="disconnectClient()">Disconnect Client</button>
+      </div>
+        <div class="block1">
+          <button class="button"  onclick="stopServer()">Stop Server</button>
+          <button class="button"  onclick="runServer()">Run Server</button>
+          <button class="button"  onclick="getModules()">Get Modules</button>
+          <button class="button"  onclick="getModuleData()">Get Module Data</button>
+        </div>
+
     </div>
 
-    <div class="mt-4">
+    <div class="mt-10">
         <h2>Response:</h2>
         <pre id="response"></pre>
     </div>
 </div>
-<script src="{{ url_for('static', path='js/api.js') }}"></script>
 
 {% endblock %}

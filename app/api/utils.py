@@ -20,7 +20,6 @@ def encrypt_message(message: str) -> str:
 
 
 def decrypt_message(encrypted_message: str) -> str:
-    print(encrypted_message)
     encrypted_message_bytes = base64.b64decode(encrypted_message)
     iv = encrypted_message_bytes[:16]  # Первые 16 байт — это IV
     encrypted_message_bytes = encrypted_message_bytes[
