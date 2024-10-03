@@ -66,7 +66,8 @@ async def disconnect_client(
             manager.disconnect(encrypt_message(client_id), is_admin=True)
             await manager.update_connected_clients()
             await manager.broadcast(
-                f"Клиент {client_id} " f"вышел из чата", exclude_id=client_id,
+                f"Клиент {client_id} " f"вышел из чата",
+                exclude_id=client_id,
             )
             return {"message": f"Client {client_id} disconnected"}
         raise HTTPException(status_code=404, detail="Client not found")

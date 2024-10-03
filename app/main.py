@@ -4,6 +4,7 @@ import uvicorn
 from argon2 import PasswordHasher
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import insert, select
 
@@ -44,6 +45,11 @@ app.add_middleware(
 
 settings = Settings()
 password_hasher = PasswordHasher()
+
+
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/pages/chat")
 
 
 @app.on_event("startup")
