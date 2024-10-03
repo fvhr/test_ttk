@@ -36,6 +36,7 @@ LOGIN={логин пользователя api}
 PASSWORD={пароль пользователя api}
 
 # Создание таблиц/миграций в базе данных
+## ВАЖНО ПЕРЕД ВЫПОЛНЕНИЕМ МИГРАЦИЙ СОЗДАТЬ ПАПКУ app/mysql/migrations/version
 make make_migrations
 
 # Подстановка секретных переменных в окружение app/websockets/ws_config.conf
