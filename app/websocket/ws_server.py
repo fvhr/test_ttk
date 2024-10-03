@@ -127,5 +127,5 @@ async def websocket_endpoint(websocket: WebSocket):
         manager.disconnect(client_id)
         await manager.update_connected_clients()
         await manager.broadcast(
-            f"Клиент {client_id} " f"вышел из чата", exclude_id=client_id
+            f"Клиент {client_id} " f"вышел из чата", exclude_id=client_id,
         )
