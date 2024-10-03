@@ -38,10 +38,10 @@ class ConnectionManager:
             del self.active_connections[client_id]
 
     async def send_personal_message(
-            self,
-            message: str,
-            client_id: str,
-            is_admin: bool = False,
+        self,
+        message: str,
+        client_id: str,
+        is_admin: bool = False,
     ):
         if is_admin:
             client_id = decrypt_message(client_id)
@@ -53,10 +53,10 @@ class ConnectionManager:
             await websocket.send_json({"type": "message", "message": message})
 
     async def broadcast(
-            self,
-            message,
-            exclude_id: str = None,
-            is_admin: bool = False,
+        self,
+        message,
+        exclude_id: str = None,
+        is_admin: bool = False,
     ):
         if is_admin:
             message = "Сообщение от администратора: " + decrypt_message(
@@ -94,8 +94,11 @@ manager = ConnectionManager()
 @ws_router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
-    client_id = [client_id for client_id, values in manager.active_connections.items()
-                 if values["websocket"] == websocket][0]
+    client_id = [
+        client_id
+        for client_id, values in manager.active_connections.items()
+        if values["websocket"] == websocket
+    ][0]
     try:
         while True:
             data = await websocket.receive_text()
@@ -104,8 +107,8 @@ async def websocket_endpoint(websocket: WebSocket):
                 target_client_id = message_data.get("target")
                 message = message_data.get("message")
                 if (
-                        target_client_id
-                        and target_client_id in manager.active_connections
+                    target_client_id
+                    and target_client_id in manager.active_connections
                 ):
                     await manager.send_personal_message(
                         f"Private from {client_id}: {message}",
@@ -123,4 +126,6 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(client_id)
         await manager.update_connected_clients()
-        await manager.broadcast(f"Клиент {client_id} вышел из чата", exclude_id=client_id)
+        await manager.broadcast(
+            f"Клиент {client_id} " f"вышел из чата", exclude_id=client_id
+        )
